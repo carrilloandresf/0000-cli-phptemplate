@@ -21,7 +21,7 @@ Todas las carpetas necesarias para ejecutar la API están ahora en la raíz del 
 ### 1. Levantar MySQL
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### 2. Configurar Base de Datos

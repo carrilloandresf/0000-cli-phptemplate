@@ -5,8 +5,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Infrastructure\Database\Database;
 
 try {
-    // Conectar sin base de datos específica para crearla
-    $pdo = new PDO('mysql:host=localhost', 'root', 'root');
+    $pdo = new PDO('mysql:host=host.docker.internal;port=3306', 'root', 'root');
     $pdo->exec("CREATE DATABASE IF NOT EXISTS demo_db");
     $pdo->exec("USE demo_db");
     
@@ -49,7 +48,7 @@ try {
     echo "✅ Stored Procedure 'GetUserCount' created\n";
     
     // SP con parámetros - Stats específicos de usuario
-    $pdo->exec("DROP PROCEDURE IF EXISTS GetUserStats");
+    $pdo->exec("Drop PROCEDURE IF EXISTS GetUserStats");
     $pdo->exec("
         CREATE PROCEDURE GetUserStats(IN user_id INT)
         BEGIN

@@ -10,7 +10,7 @@ class Database
     {
         if (self::$connection === null) {
             self::$connection = new \PDO(
-                'mysql:host=localhost;dbname=demo_db;charset=utf8mb4',
+                'mysql:host=host.docker.internal;port=3306;dbname=demo_db;charset=utf8mb4',
                 'root',
                 'root',
                 [
