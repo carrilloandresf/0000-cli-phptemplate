@@ -5,7 +5,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Infrastructure\Database\Database;
 
 try {
-    $pdo = new PDO('mysql:host=host.docker.internal;port=3306', 'root', 'root');
+    $host = getenv('DB_HOST') ?: '127.0.0.1';
+    $port = getenv('DB_PORT') ?: '3306';
+    $username = getenv('DB_USER') ?: 'root';
+    $password = getenv('DB_PASSWORD') ?: 'root';
+
+    $dsn = sprintf('mysql:host=%s;port=%s', $host, $port);
+
+    $pdo = new PDO($dsn, $username, $password);
     $pdo->exec("CREATE DATABASE IF NOT EXISTS demo_db");
     $pdo->exec("USE demo_db");
     
