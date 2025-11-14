@@ -9,6 +9,7 @@ use App\Application\Services\StatsService;
 use App\Infrastructure\Http\Response;
 use App\Infrastructure\Database\Database;
 
+
 header('Content-Type: application/json');
 
 // Inicializar DB
@@ -32,6 +33,12 @@ try {
             $calculator = new CalculatorService();
             $result = $calculator->process($expression);
             Response::json($result->toArray());
+            break;
+
+        case 'GET /api/historyAcronyms':
+            $processor = new TextProcessor();
+            $history = $processor->getAcronymHistory();
+            Response::json(['history' => $history, 'count' => count($history)]);
             break;
             
         case 'POST /api/process-text':

@@ -1,0 +1,14 @@
+1. Algoritmo que saque el acronimo
+Input - Andrés Felipe Carrillo
+Output - AFC
+
+2. Interfaz
+Microservicios en postman
+
+Historial de acronimos con propia interfaz
+
+3 - Probar con lorem ipsum
+
+4 - Agregar un punto en cada linea entre parejas de letra
+ej: Andres Felipe Carrillo (Input)
+An.Fe.Ca (Output)
