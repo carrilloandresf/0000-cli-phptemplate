@@ -1,0 +1,24 @@
+{
+    "name": "dev/api-demo",
+    "description": "PHP API Demo with Clean Architecture",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "echo '🚀 Autoload generated successfully'"
+        ]
+    }
+}
