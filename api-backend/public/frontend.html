@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>API Demo - Hello World</title>
+    <style>
+        :root {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6fb;
+            color: #222;
+        }
+        body {
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+        }
+        section {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 16px rgba(15, 23, 42, 0.08);
+            padding: 1.5rem;
+        }
+        h2 {
+            margin-top: 0;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+        label {
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+            font-size: .9rem;
+        }
+        input, textarea, select, button {
+            padding: .6rem .8rem;
+            border-radius: 8px;
+            border: 1px solid #cbd5f5;
+            font-size: 1rem;
+        }
+        button {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background .2s;
+        }
+        button:hover {
+            background: #1d4ed8;
+        }
+        pre {
+            background: #0f172a;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .actions {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+        footer {
+            text-align: center;
+            font-size: .9rem;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>API Demo - Hello World Completo</h1>
+        <p>
+            Este micro front te permite probar todos los módulos: cálculo, procesamiento de texto,
+            CRUD de usuarios, métricas y healthcheck. Todos los requests se realizan contra la API PHP de la carpeta
+            <code>api-backend</code>.
+        </p>
+        <p>
+            Asegúrate de tener la base de datos levantada antes de probar el CRUD para obtener el efecto completo.
+        </p>
+    </header>
+
+    <main>
+        <section>
+            <h2>🔢 Calculadora (GET /api/calculate)</h2>
+            <form id="calculate-form">
+                <label>
+                    Expresión aritmética
+                    <input type="text" name="expression" value="5+3*2" required>
+                </label>
+                <button type="submit">Calcular</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>📝 Procesador de texto (POST /api/process-text)</h2>
+            <form id="text-form">
+                <label>
+                    Texto a procesar
+                    <textarea name="text" rows="3" required>hola mundo desde el front</textarea>
+                </label>
+                <button type="submit">Procesar</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>👥 Usuarios (CRUD completo)</h2>
+            <form id="user-create-form">
+                <label>
+                    Nombre
+                    <input type="text" name="name" value="Ada Lovelace" required>
+                </label>
+                <label>
+                    Email
+                    <input type="email" name="email" value="ada@example.com" required>
+                </label>
+                <button type="submit">Crear usuario</button>
+            </form>
+            <div class="actions">
+                <button data-action="list-users">Listar usuarios</button>
+                <button data-action="get-user">Obtener usuario #1</button>
+                <button data-action="update-user">Actualizar usuario #1</button>
+                <button data-action="delete-user">Eliminar usuario #1</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>📊 Stored Procedures</h2>
+            <div class="actions">
+                <button data-action="stats-count">GET /api/stats/user-count</button>
+                <button data-action="stats-user">GET /api/stats/user-stats/1</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>❤️ Health Check</h2>
+            <div class="actions">
+                <button data-action="health">Ver estado actual</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>📦 Última respuesta</h2>
+            <pre id="output">Presiona cualquier acción para ver la respuesta JSON aquí.</pre>
+        </section>
+    </main>
+
+    <footer>
+        Proyecto de ejemplo "hello world" para la prueba técnica PHP. Frontend estático con fetch API.
+    </footer>
+
+    <script>
+        const output = document.getElementById('output');
+
+        function show(data) {
+            output.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+        }
+
+        async function request(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: { 'Content-Type': 'application/json' },
+                    ...options
+                });
+                const text = await response.text();
+                let payload;
+                try {
+                    payload = JSON.parse(text);
+                } catch (_) {
+                    payload = text;
+                }
+                show({ status: response.status, body: payload });
+            } catch (error) {
+                show({ error: error.message });
+            }
+        }
+
+        document.getElementById('calculate-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const data = new FormData(event.target);
+            const expression = encodeURIComponent(data.get('expression'));
+            request(`/api/calculate?expression=${expression}`);
+        });
+
+        document.getElementById('text-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const data = new FormData(event.target);
+            request('/api/process-text', {
+                method: 'POST',
+                body: JSON.stringify({ text: data.get('text') })
+            });
+        });
+
+        document.getElementById('user-create-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const data = new FormData(event.target);
+            request('/api/users', {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: data.get('name'),
+                    email: data.get('email')
+                })
+            });
+        });
+
+        document.querySelectorAll('.actions button').forEach((button) => {
+            button.addEventListener('click', () => {
+                switch (button.dataset.action) {
+                    case 'list-users':
+                        request('/api/users');
+                        break;
+                    case 'get-user':
+                        request('/api/users/1');
+                        break;
+                    case 'update-user':
+                        request('/api/users/1', {
+                            method: 'PUT',
+                            body: JSON.stringify({ name: 'Ada Updated', email: 'ada.updated@example.com' })
+                        });
+                        break;
+                    case 'delete-user':
+                        request('/api/users/1', { method: 'DELETE' });
+                        break;
+                    case 'stats-count':
+                        request('/api/stats/user-count');
+                        break;
+                    case 'stats-user':
+                        request('/api/stats/user-stats/1');
+                        break;
+                    case 'health':
+                        request('/api/health');
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
